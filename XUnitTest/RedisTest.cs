@@ -19,7 +19,7 @@ using Xunit;
 namespace XUnitTest;
 
 //[Collection("Basic")]
-[TestCaseOrderer("NewLife.UnitTest.PriorityOrderer", "NewLife.UnitTest")]
+[TestCaseOrderer("NewLife.UnitTest.PriorityOrderer", "DH.UnitTest")]
 public class RedisTest
 {
     private Redis _redis;
