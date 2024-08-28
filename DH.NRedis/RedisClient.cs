@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-
 using NewLife.Collections;
 using NewLife.Data;
 using NewLife.Log;
@@ -41,6 +40,8 @@ public class RedisClient : DisposeBase
 
     /// <summary>登录时间</summary>
     public DateTime LoginTime { get; private set; }
+
+    const Int32 MAX_POOL_SIZE = 1024 * 1024;
     #endregion
 
     #region 构造
@@ -155,7 +156,7 @@ public class RedisClient : DisposeBase
     /// <param name="args"></param>
     /// <param name="oriArgs">原始参数，仅用于输出日志</param>
     /// <returns></returns>
-    protected virtual Int32 GetRequest(Memory<Byte> memory, String cmd, Packet[] args, Object[]? oriArgs)
+    protected virtual Int32 GetRequest(Memory<Byte> memory, String cmd, Object[]? args)
     {
         // *<number of arguments>\r\n$<number of bytes of argument 1>\r\n<argument data>\r\n
         // *1\r\n$4\r\nINFO\r\n
@@ -185,39 +186,40 @@ public class RedisClient : DisposeBase
             //Encoding.UTF8.GetBytes(GetHeaderBytes(cmd, args.Length), memory.Span);
             writer.Write(GetHeaderBytes(cmd, args.Length));
 
-            for (var i = 0; i < args.Length; i++)
+            for (var i = 0; i < args!.Length; i++)
             {
-                var item = args[i];
-                var size = item.Total;
-                var sizes = size.ToString().GetBytes();
+                Byte[] buf = null!;
+                var size = 0;
+                var str = args[i] as String;
+                if (str != null)
+                {
+                    size = Encoding.UTF8.GetByteCount(str);
+                }
+                else
+                {
+                    buf = (args[i] as Byte[])!;
+                    size = buf.Length;
+                }
 
                 // 指令日志。简单类型显示原始值，复杂类型显示序列化后字符串
-                if (log != null && oriArgs != null)
+                if (log != null && args != null)
                 {
                     log.Append(' ');
-                    var ori = oriArgs[i];
-                    switch (ori.GetType().GetTypeCode())
-                    {
-                        case TypeCode.Object:
-                            log.AppendFormat("[{0}]{1}", size, item.ToStr(null, 0, 1024)?.TrimEnd());
-                            break;
-                        case TypeCode.DateTime:
-                            log.Append(((DateTime)ori).ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                            break;
-                        default:
-                            log.Append(ori);
-                            break;
-                    }
+                    if (str != null)
+                        log.Append(str);
+                    else
+                        log.AppendFormat("[{0}]{1}", size, buf.ToStr(null, 0, 1024)?.TrimEnd());
                 }
 
                 //str = "${0}\r\n".F(item.Length);
                 writer.WriteByte((Byte)'$');
-                writer.Write(sizes);
+                writer.Write(size.ToString());
                 writer.Write(_NewLine);
-                for (var pk = item; pk != null; pk = pk.Next)
-                {
-                    writer.Write(new Span<Byte>(pk.Data, pk.Offset, pk.Count));
-                }
+                if (str != null)
+                    writer.Write(str);
+                else
+                    writer.Write(buf);
+
                 writer.Write(_NewLine);
             }
         }
@@ -305,7 +307,7 @@ public class RedisClient : DisposeBase
     /// <param name="oriArgs">原始参数，仅用于输出日志</param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-    protected virtual async Task<Object?> ExecuteCommandAsync(String cmd, Packet[] args, Object[]? oriArgs, CancellationToken cancellationToken)
+    protected virtual async Task<Object?> ExecuteCommandAsync(String cmd, Object[]? args, CancellationToken cancellationToken)
     {
         var isQuit = cmd == "QUIT";
 
@@ -318,20 +320,29 @@ public class RedisClient : DisposeBase
             CheckLogin(cmd);
             CheckSelect(cmd);
 
+            // 参数编码为字符串或字节数组
+            if (args != null)
+            {
+                for (var i = 0; i < args.Length; i++)
+                {
+                    args[i] = Host.Encoder.Encode(args[i]);
+                }
+            }
+
             // 估算数据包大小，从内存池借出
-            var total = 16 + cmd.Length + args.Sum(e => 16 + e.Total);
-            var buffer = Pool.Shared.Rent(total);
+            var total = GetCommandSize(cmd, args);
+            var buffer = total < MAX_POOL_SIZE ? Pool.Shared.Rent(total) : new Byte[total];
             var memory = buffer.AsMemory();
 
-            var p = GetRequest(memory, cmd, args, oriArgs);
+            var p = GetRequest(memory, cmd, args);
             memory = memory[..p];
 
             var max = Host.MaxMessageSize;
-            if (max > 0 && memory.Length > max) throw new InvalidOperationException($"命令[{cmd}]的数据包大小[{memory.Length}]超过最大限制[{max}]，大key会拖累整个Redis实例，可通过Redis.MaxMessageSize调节。");
+            if (max > 0 && memory.Length >= max) throw new InvalidOperationException($"命令[{cmd}]的数据包大小[{memory.Length}]超过最大限制[{max}]，大key会拖累整个Redis实例，可通过Redis.MaxMessageSize调节。");
 
             if (memory.Length > 0) await ns.WriteAsync(memory);
 
-            Pool.Shared.Return(buffer);
+            if (total < MAX_POOL_SIZE) Pool.Shared.Return(buffer);
 
             await ns.FlushAsync(cancellationToken);
         }
@@ -476,6 +487,23 @@ public class RedisClient : DisposeBase
 
         return sb.Return(true);
     }
+
+    private Int32 GetCommandSize(String cmd, Object[]? args)
+    {
+        var total = 16 + cmd.Length;
+        if (args != null)
+        {
+            foreach (var item in args)
+            {
+                if (item is String str)
+                    total += 16 + Encoding.UTF8.GetByteCount(str);
+                else if (item is Byte[] buf)
+                    total += 16 + buf.Length;
+            }
+        }
+
+        return total;
+    }
     #endregion
 
     #region 主要方法
@@ -540,7 +568,7 @@ public class RedisClient : DisposeBase
         using var span = cmd.IsNullOrEmpty() ? null : Host.Tracer?.NewSpan($"redis:{Name}:{act}", args);
         try
         {
-            return await ExecuteCommandAsync(cmd, args.Select(e => Host.Encoder.Encode(e)).ToArray(), args, cancellationToken);
+            return await ExecuteCommandAsync(cmd, args, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -682,8 +710,24 @@ public class RedisClient : DisposeBase
             CheckSelect(null);
 
             // 估算数据包大小，从内存池借出
-            var total = Host.MaxMessageSize;
-            var buffer = Pool.Shared.Rent(total);
+            var total = 0;
+            foreach (var item in ps)
+            {
+                // 参数编码为字符串或字节数组
+                var args = item.Args;
+                if (args != null)
+                {
+                    for (var i = 0; i < args.Length; i++)
+                    {
+                        args[i] = Host.Encoder.Encode(args[i]);
+                    }
+                    item.Args = args;
+                }
+
+                total += GetCommandSize(item.Name, item.Args);
+            }
+
+            var buffer = total < MAX_POOL_SIZE ? Pool.Shared.Rent(total) : new Byte[total];
             var memory = buffer.AsMemory();
             var p = 0;
 
@@ -692,7 +736,7 @@ public class RedisClient : DisposeBase
             foreach (var item in ps)
             {
                 cmds.Add(item.Name);
-                p += GetRequest(memory.Slice(p), item.Name, item.Args.Select(e => Host.Encoder.Encode(e)).ToArray(), item.Args);
+                p += GetRequest(memory.Slice(p), item.Name, item.Args);
             }
             memory = memory[..p];
 
@@ -701,7 +745,7 @@ public class RedisClient : DisposeBase
 
             // 整体发出
             if (memory.Length > 0) ns.WriteAsync(memory).GetAwaiter().GetResult();
-            Pool.Shared.Return(buffer);
+            if (total < MAX_POOL_SIZE) Pool.Shared.Return(buffer);
 
             if (!requireResult) return new Object[ps.Count];
 

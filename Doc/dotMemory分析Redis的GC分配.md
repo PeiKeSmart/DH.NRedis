@@ -30,5 +30,22 @@
 
 ![image-20240826230614166](dotMemory分析Redis的GC分配.assets/image-20240826230614166.png)
 
+​	至此，可以发现，最大内存消耗来自于Encode，也就是把参数转为字节数组的环节。
 
 
+
+## 优化Encode
+
+​	采用Span优化Encode，对于字符串，直接编码转换，避免再次分配字节数组。
+
+![image-20240827021401420](dotMemory分析Redis的GC分配.assets/image-20240827021401420.png)
+
+​	字节数组分配降到772M，现在的问题是，无法准确估算缓冲区大小，导致借出内存过大，产生LOH分配。
+
+
+
+## 完全Encode参数
+
+​	执行命令前，先把参数Encode编码为字符串或字节数组，方便Span写入。其实绝大部分场景都是字符串。Byte[]分配下降到263M。
+
+![image-20240827112839799](dotMemory分析Redis的GC分配.assets/image-20240827112839799.png)
