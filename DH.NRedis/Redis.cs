@@ -55,7 +55,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     public Int32 AutoPipeline { get; set; }
 
     /// <summary>编码器。决定对象存储在redis中的格式，默认json</summary>
-    public RedisJsonEncoder Encoder { get; set; } = new RedisJsonEncoder();
+    public IPacketEncoder Encoder { get; set; } = new RedisJsonEncoder();
 
     /// <summary>Json序列化主机</summary>
     public IJsonHost JsonHost { get; set; } = null!;
@@ -472,7 +472,6 @@ public class Redis : Cache, IConfigMapping, ILogFeature
                 client.TryDispose();
 
                 // 网络异常时，自动切换到其它节点
-                if (ex is AggregateException ae) ex = ae.InnerException;
                 if (ex is SocketException or IOException && _servers != null && i < _servers.Length)
                     _idxServer++;
                 else
@@ -711,12 +710,12 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     public virtual IDictionary<String, String> GetInfo(Boolean all = false)
     {
         var rs = all ?
-            Execute(rds => rds.Execute<String>("INFO", "all")) :
-            Execute(rds => rds.Execute<String>("INFO"));
-        if (rs.IsNullOrEmpty()) return new Dictionary<String, String>();
+            Execute(rds => rds.Execute("INFO", "all") as Packet) :
+            Execute(rds => rds.Execute("INFO") as Packet);
+        if (rs == null || rs.Count == 0) return new Dictionary<String, String>();
 
-        //var inf = rs.ToStr();
-        return rs.SplitAsDictionary(":", "\r\n");
+        var inf = rs.ToStr();
+        return inf.SplitAsDictionary(":", "\r\n");
     }
 
     /// <summary>单个实体项</summary>
