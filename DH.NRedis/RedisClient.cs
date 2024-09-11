@@ -237,7 +237,7 @@ public class RedisClient : DisposeBase
     /// <param name="args"></param>
     /// <param name="oriArgs">原始参数，仅用于输出日志</param>
     /// <returns></returns>
-    protected virtual void GetRequest(Stream ms, String cmd, Packet[] args, Object[]? oriArgs)
+    protected virtual void GetRequest(Stream ms, String cmd, IPacket[] args, Object[]? oriArgs)
     {
         // *<number of arguments>\r\n$<number of bytes of argument 1>\r\n<argument data>\r\n
         // *1\r\n$4\r\nINFO\r\n
@@ -365,7 +365,7 @@ public class RedisClient : DisposeBase
     /// <param name="args"></param>
     /// <param name="oriArgs">原始参数，仅用于输出日志</param>
     /// <returns></returns>
-    protected virtual Object? ExecuteCommand(String cmd, Packet[] args, Object[]? oriArgs)
+    protected virtual Object? ExecuteCommand(String cmd, IPacket[] args, Object[]? oriArgs)
     {
         var isQuit = cmd == "QUIT";
 
@@ -476,7 +476,7 @@ public class RedisClient : DisposeBase
     /// <param name="oriArgs">原始参数，仅用于输出日志</param>
     /// <param name="cancellationToken">取消通知</param>
     /// <returns></returns>
-    protected virtual async Task<Object?> ExecuteCommandAsync(String cmd, Packet[] args, Object[]? oriArgs, CancellationToken cancellationToken)
+    protected virtual async Task<Object?> ExecuteCommandAsync(String cmd, IPacket[] args, Object[]? oriArgs, CancellationToken cancellationToken)
     {
         var isQuit = cmd == "QUIT";
 

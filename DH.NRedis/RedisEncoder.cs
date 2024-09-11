@@ -43,18 +43,18 @@ public class RedisJsonEncoder : IPacketEncoder
     /// <summary>数值转数据包</summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public virtual Packet Encode(Object value)
+    public virtual IPacket Encode(Object value)
     {
-        if (value == null) return new Byte[0];
+        if (value == null) return new Packet(new Byte[0]);
 
         if (value is Packet pk) return pk;
-        if (value is Byte[] buf) return buf;
+        if (value is Byte[] buf) return new Packet(buf);
         if (value is IAccessor acc) return acc.ToPacket();
 
         var type = value.GetType();
         return (type.GetTypeCode()) switch
         {
-            TypeCode.Object => JsonHost.Write(value).GetBytes(),
+            TypeCode.Object => new Packet(JsonHost.Write(value).GetBytes()),
             TypeCode.String => (value as String).GetBytes(),
             TypeCode.DateTime => ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss.fff").GetBytes(),
             _ => (value + "").GetBytes(),
@@ -65,7 +65,7 @@ public class RedisJsonEncoder : IPacketEncoder
     /// <param name="pk"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    public virtual Object? Decode(Packet pk, Type type)
+    public virtual Object? Decode(IPacket pk, Type type)
     {
         //if (pk == null) return null;
 

@@ -1049,7 +1049,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
     /// <param name="threads">线程</param>
     /// <param name="rand">随机读写</param>
     /// <param name="batch">批量操作</param>
-    protected override Int64 BenchInc(String key, Int64 times, Int32 threads, Boolean rand, Int32 batch)
+    protected override Int64 BenchInc(String[] key, Int64 times, Int32 threads, Boolean rand, Int32 batch)
     {
         if (rand && batch > 10) times /= 10;
         return base.BenchInc(key, times, threads, rand, batch);
