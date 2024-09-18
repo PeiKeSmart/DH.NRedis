@@ -1,4 +1,5 @@
-﻿using NewLife.Data;
+﻿using System.Buffers;
+using NewLife.Data;
 using NewLife.Log;
 
 namespace NewLife.Caching;
@@ -14,7 +15,7 @@ public static class RedisHelper
     internal static Object AttachTraceId(this Redis redis, Object msg)
     {
         // 消息为空或者特殊类型，不接受注入
-        if (msg == null || msg is Byte[] || msg is Packet) return msg;
+        if (msg == null || msg is Byte[] || msg is IPacket) return msg;
 
         // 字符串或复杂类型以外的消息，不接受注入
         var code = Type.GetTypeCode(msg.GetType());
@@ -56,4 +57,33 @@ public static class RedisHelper
         return msg;
     }
     #endregion
+
+    /// <summary>获取Span</summary>
+    /// <param name="owner"></param>
+    /// <returns></returns>
+    public static Span<T> GetSpan<T>(this IMemoryOwner<T> owner)
+    {
+        if (owner is MemoryManager<T> manager)
+            return manager.GetSpan();
+
+        return owner.Memory.Span;
+    }
+
+    internal static Int32 Read(this Stream stream, Span<Byte> buffer)
+    {
+        var array = ArrayPool<Byte>.Shared.Rent(buffer.Length);
+        try
+        {
+            var num = stream.Read(array, 0, buffer.Length);
+            if ((UInt32)num > (UInt32)buffer.Length)
+                throw new IOException("IO_StreamTooLong");
+
+            new ReadOnlySpan<Byte>(array, 0, num).CopyTo(buffer);
+            return num;
+        }
+        finally
+        {
+            ArrayPool<Byte>.Shared.Return(array);
+        }
+    }
 }

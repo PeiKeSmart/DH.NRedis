@@ -41,11 +41,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\IPacket.cs" />
+    <Compile Remove="Common\MemorySegment.cs" />    
     <Compile Remove="SpanWriter.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="3.7.2024.913-beta0423" />
+    <PackageReference Include="DH.NCore" Version="3.7.2024.918-beta0619" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

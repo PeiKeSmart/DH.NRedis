@@ -1,5 +1,4 @@
-﻿using System;
-using NewLife.Data;
+﻿using NewLife.Data;
 
 namespace NewLife.Caching.Queues;
 
@@ -24,12 +23,12 @@ public class ConsumerInfo
     {
         for (var i = 0; i < vs.Length - 1; i += 2)
         {
-            var key = (vs[i] as Packet)!.ToStr();
+            var key = (vs[i] as IPacket)!.ToStr();
             if (key.IsNullOrEmpty()) continue;
 
             switch (key)
             {
-                case "name": Name = (vs[i + 1] as Packet)?.ToStr(); break;
+                case "name": Name = (vs[i + 1] as IPacket)?.ToStr(); break;
                 case "pending": Pending = vs[i + 1].ToInt(); break;
                 case "idle": Idle = vs[i + 1].ToInt(); break;
             }

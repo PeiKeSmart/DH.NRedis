@@ -72,8 +72,8 @@ public class RedisGeo : RedisBase
             var inf = new GeoInfo { Name = members[i] };
             if (rs[i] is Object[] vs)
             {
-                inf.Longitude = (vs[0] as Packet)?.ToStr().ToDouble() ?? 0;
-                inf.Latitude = (vs[1] as Packet)?.ToStr().ToDouble() ?? 0;
+                inf.Longitude = (vs[0] as IPacket)?.ToStr().ToDouble() ?? 0;
+                inf.Latitude = (vs[1] as IPacket)?.ToStr().ToDouble() ?? 0;
             }
 
             list.Add(inf);
@@ -131,12 +131,12 @@ public class RedisGeo : RedisBase
             var inf = new GeoInfo();
             if (rs[i] is Object[] vs)
             {
-                inf.Name = (vs[0] as Packet)?.ToStr();
-                inf.Distance = (vs[1] as Packet)?.ToStr().ToDouble() ?? 0;
+                inf.Name = (vs[0] as IPacket)?.ToStr();
+                inf.Distance = (vs[1] as IPacket)?.ToStr().ToDouble() ?? 0;
                 if (vs[2] is Object[] vs2)
                 {
-                    inf.Longitude = (vs2[0] as Packet)?.ToStr().ToDouble() ?? 0;
-                    inf.Latitude = (vs2[1] as Packet)?.ToStr().ToDouble() ?? 0;
+                    inf.Longitude = (vs2[0] as IPacket)?.ToStr().ToDouble() ?? 0;
+                    inf.Latitude = (vs2[1] as IPacket)?.ToStr().ToDouble() ?? 0;
                 }
             }
 
@@ -167,12 +167,12 @@ public class RedisGeo : RedisBase
             var inf = new GeoInfo();
             if (rs[i] is Object[] vs)
             {
-                inf.Name = (vs[0] as Packet)?.ToStr();
-                inf.Distance = (vs[1] as Packet)?.ToStr().ToDouble() ?? 0;
+                inf.Name = (vs[0] as IPacket)?.ToStr();
+                inf.Distance = (vs[1] as IPacket)?.ToStr().ToDouble() ?? 0;
                 if (vs[2] is Object[] vs2)
                 {
-                    inf.Longitude = (vs2[0] as Packet)?.ToStr().ToDouble() ?? 0;
-                    inf.Latitude = (vs2[1] as Packet)?.ToStr().ToDouble() ?? 0;
+                    inf.Longitude = (vs2[0] as IPacket)?.ToStr().ToDouble() ?? 0;
+                    inf.Latitude = (vs2[1] as IPacket)?.ToStr().ToDouble() ?? 0;
                 }
             }
 
