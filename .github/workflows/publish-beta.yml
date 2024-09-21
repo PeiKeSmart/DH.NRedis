@@ -2,7 +2,7 @@ name: publish-beta
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
     paths:
         - 'DH.NRedis/**'
         - 'DH.NRedis.Extensions/**'
