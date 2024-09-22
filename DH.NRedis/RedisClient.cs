@@ -213,7 +213,7 @@ public class RedisClient : DisposeBase
                     else if (buf != null)
                         log.AppendFormat("[{0}]{1}", size, buf.ToStr(null, 0, 1024)?.TrimEnd());
                     else if (pk != null)
-                        log.AppendFormat("[{0}]{1}", size, pk.GetSpan().ToHex(1024));
+                        log.AppendFormat("[{0}]{1}", size, pk.ToHex(1024));
                 }
 
                 //str = "${0}\r\n".F(item.Length);
