@@ -29,7 +29,7 @@
     <RepositoryUrl>https://github.com/PeiKeSmart/DH.NRedis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>默认使用System.Text.Json序列化；支持DateOnly/TimeOnly</PackageReleaseNotes>
+    <PackageReleaseNotes>内存优化，在高并发场合减少内存分配</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

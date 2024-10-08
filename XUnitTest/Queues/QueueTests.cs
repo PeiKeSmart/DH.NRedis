@@ -13,6 +13,7 @@ using Xunit;
 namespace XUnitTest.Queues;
 
 //[Collection("Queue")]
+[TestCaseOrderer("DH.UnitTest.DefaultOrderer", "DH.UnitTest")]
 public class QueueTests
 {
     private FullRedis _redis;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ using Xunit;
 namespace XUnitTest;
 
 //[Collection("Basic")]
-[TestCaseOrderer("NewLife.UnitTest.PriorityOrderer", "DH.UnitTest")]
+[TestCaseOrderer("DH.UnitTest.PriorityOrderer", "DH.UnitTest")]
 public class RedisTest
 {
     private Redis _redis;
