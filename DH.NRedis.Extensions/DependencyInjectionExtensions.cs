@@ -27,7 +27,7 @@ public static class DependencyInjectionExtensions
         services.AddSingleton(redis);
 
         // 注册Redis缓存服务
-        services.TryAddSingleton(p =>
+        services.TryAddSingleton<ICacheProvider>(p =>
         {
             var provider = new RedisCacheProvider(p);
             if (provider.Cache is not Redis) provider.Cache = redis;
@@ -126,7 +126,7 @@ public static class DependencyInjectionExtensions
         services.TryAddSingleton<Redis>(p => p.GetRequiredService<FullRedis>());
 
         // 注册Redis缓存服务
-        services.TryAddSingleton(p =>
+        services.TryAddSingleton<ICacheProvider>(p =>
         {
             var redis = p.GetRequiredService<FullRedis>();
             var provider = new RedisCacheProvider(p);
