@@ -17,6 +17,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <NoWarn>1701;1702;NU5104;NU1505;NETSDK1138;CS7035</NoWarn>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <WarningsAsErrors>CA2007</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

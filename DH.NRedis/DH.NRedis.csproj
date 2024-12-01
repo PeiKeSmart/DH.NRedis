@@ -18,6 +18,9 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoWarn>1701;1702;NU5104;NU1505;NETSDK1138;CS7035</NoWarn>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <WarningsAsErrors>CA2007</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -47,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.0.2024.1126-beta0132" />
+    <PackageReference Include="DH.NCore" Version="4.0.2024.1201-beta0217" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
