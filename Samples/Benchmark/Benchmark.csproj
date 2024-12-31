@@ -24,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-    <PackageReference Include="DH.NStardust" Version="4.0.2024.1226-beta0320" />
+    <PackageReference Include="DH.NStardust" Version="4.0.2024.1230-beta0257" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DH.NRedis\DH.NRedis.csproj" />
