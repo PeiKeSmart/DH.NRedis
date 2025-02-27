@@ -48,7 +48,7 @@ public class RedisEventBus<TEvent>(FullRedis cache, String topic, String group) 
     /// <param name="event">事件</param>
     /// <param name="context">上下文</param>
     /// <param name="cancellationToken">取消令牌</param>
-    public override Task<Int32> PublishAsync(TEvent @event, IEventContext<TEvent>? context = null, CancellationToken cancellationToken = default(CancellationToken))
+    public override Task<Int32> PublishAsync(TEvent @event, IEventContext<TEvent>? context = null, CancellationToken cancellationToken = default)
     {
         Init();
         var rs = _queue.Add(@event);
@@ -93,7 +93,7 @@ public class RedisEventBus<TEvent>(FullRedis cache, String topic, String group) 
                     if (msg2 != null)
                     {
                         // 发布到事件总线
-                        await base.PublishAsync(msg2, new RedisEventContext<TEvent>(this, msg)).ConfigureAwait(false);
+                        await base.PublishAsync(msg2, new RedisEventContext<TEvent>(this, msg), cancellationToken).ConfigureAwait(false);
                     }
                 }
                 else
