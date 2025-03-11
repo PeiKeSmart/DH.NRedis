@@ -93,6 +93,30 @@ public class HashTest
 
         Assert.Equal(org5, hash["org5"]);
     }
+
+    [Fact]
+    public void CheckHashTest()
+    {
+        var key = $"NewLife:eventinfo:adsfasdfasdfdsaf";
+
+        var hash = _redis.GetDictionary<EventInfo>(key);
+        Assert.NotNull(hash);
+
+        var rh = hash as RedisHash<String, EventInfo>;
+
+        foreach (var item in rh.GetAll())
+        {
+            XTrace.WriteLine(item.Key);
+        }
+
+        rh["0"] = new EventInfo { EventId = "1234", EventName = "Stone" };
+    }
+
+    class EventInfo
+    {
+        public String? EventId { get; set; }
+        public String? EventName { get; set; }
+    }
 }
 
 public class HashTest2 : HashTest
