@@ -107,5 +107,16 @@ public class RedisStack<T> : RedisBase, IProducerConsumer<T>
     /// <returns></returns>
     Task<T?> IProducerConsumer<T>.TakeOneAsync(Int32 timeout) => TakeOneAsync(timeout, default);
 
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout = 0) => (await TakeOneAsync(timeout).ConfigureAwait(false), "0");
+
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <param name="cancellationToken">取消通知</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout, CancellationToken cancellationToken) => (await TakeOneAsync(timeout, cancellationToken).ConfigureAwait(false), "0");
+
     Int32 IProducerConsumer<T>.Acknowledge(params String[] keys) => throw new NotSupportedException();
 }

@@ -181,6 +181,17 @@ public class RedisReliableQueue<T> : QueueBase, IProducerConsumer<T>, IDisposabl
     /// <returns></returns>
     Task<T?> IProducerConsumer<T>.TakeOneAsync(Int32 timeout) => TakeOneAsync(timeout, default);
 
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout = 0) => (await TakeOneAsync(timeout).ConfigureAwait(false), "0");
+
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <param name="cancellationToken">取消通知</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout, CancellationToken cancellationToken) => (await TakeOneAsync(timeout, cancellationToken).ConfigureAwait(false), "0");
+
     /// <summary>批量消费获取，从Key弹出并备份到AckKey</summary>
     /// <remarks>假定前面获取的消息已经确认，因该方法内部可能回滚确认队列，避免误杀</remarks>
     /// <param name="count">要消费的消息个数</param>

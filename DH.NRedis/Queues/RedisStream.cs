@@ -299,6 +299,23 @@ public class RedisStream<T> : QueueBase, IProducerConsumer<T>, IDisposable
     /// <returns></returns>
     Task<T?> IProducerConsumer<T>.TakeOneAsync(Int32 timeout) => TakeOneAsync(timeout, default);
 
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout = 0) => await TakeOneAckAsync(timeout, default).ConfigureAwait(false);
+
+    /// <summary>异步消费获取一个，将消息Id抛出便于确认</summary>
+    /// <param name="timeout">超时。单位秒，0秒表示永久等待</param>
+    /// <param name="cancellationToken">取消通知</param>
+    /// <returns></returns>
+    public async Task<(T?, String)> TakeOneAckAsync(Int32 timeout, CancellationToken cancellationToken)
+    {
+        var msg = await TakeMessageAsync(timeout, cancellationToken).ConfigureAwait(false);
+        if (msg == null) return (default, "0");
+
+        return (msg.GetBody<T>(), msg.Id ?? "0");
+    }
+
     /// <summary>异步消费获取一个</summary>
     /// <param name="timeout">超时时间，默认0秒永远阻塞</param>
     /// <param name="cancellationToken">取消令牌</param>
