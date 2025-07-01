@@ -6,7 +6,7 @@
     <Description>Redis扩展库，便于注入Redis，支持分布式缓存IDistributedCache和数据保护IDataProtection</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2025 湖北登灏科技有限公司</Copyright>
-    <VersionPrefix>4.12</VersionPrefix>
+    <VersionPrefix>4.13</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
     <FileVersion>$(Version)</FileVersion>
@@ -83,12 +83,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.0-preview.5.25277.114" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.0-preview.5.25277.114" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-preview.5.25277.114" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0-preview.5.25277.114" />
   </ItemGroup>
 
   <ItemGroup>
