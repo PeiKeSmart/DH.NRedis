@@ -49,10 +49,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.32" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.32" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="5.0.17" />
@@ -73,16 +73,16 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.19" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
