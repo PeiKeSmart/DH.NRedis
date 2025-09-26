@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net45;net461;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net45;net461;net8.0;net9.0;net10.0</TargetFrameworks>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2025 湖北登灏科技有限公司</Copyright>
     <VersionPrefix>1.0</VersionPrefix>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.14.2025.826-beta0149" />
+    <PackageReference Include="DH.NCore" Version="4.14.2025.926-beta1057" />
   </ItemGroup>
 
   <ItemGroup>
