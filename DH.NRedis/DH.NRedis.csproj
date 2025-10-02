@@ -44,13 +44,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Buffers\**" />
+    <EmbeddedResource Remove="Buffers\**" />
+    <None Remove="Buffers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Common\IPacket.cs" />
     <Compile Remove="Common\MemorySegment.cs" />    
     <Compile Remove="SpanWriter.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.14.2025.926-beta1057" />
+    <PackageReference Include="DH.NCore" Version="4.15.2025.1002-beta0240" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
