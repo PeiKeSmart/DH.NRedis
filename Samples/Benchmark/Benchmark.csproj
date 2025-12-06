@@ -23,7 +23,7 @@
     <Using Include="NewLife.Reflection" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.15.7" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageReference Include="DH.NStardust" Version="4.16.2025.1113" />
   </ItemGroup>
   <ItemGroup>
