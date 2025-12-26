@@ -21,6 +21,9 @@ public class RedisEventContext<TEvent>(IEventBus<TEvent> eventBus, Queues.Messag
 public class RedisEventBus<TEvent>(FullRedis cache, String topic, String group) : EventBus<TEvent>
 {
     private RedisStream<TEvent>? _queue;
+    /// <summary>队列。默认RedisStream实现，借助队列重试机制来确保业务成功</summary>
+    public IProducerConsumer<TEvent> Queue => _queue!;
+
     private CancellationTokenSource? _source;
 
     /// <summary>销毁</summary>
@@ -56,7 +59,11 @@ public class RedisEventBus<TEvent>(FullRedis cache, String topic, String group) 
     /// <param name="cancellationToken">取消令牌</param>
     public override Task<Int32> PublishAsync(TEvent @event, IEventContext<TEvent>? context = null, CancellationToken cancellationToken = default)
     {
+        // 待发布消息增加追踪标识
+        if (@event is ITraceMessage tm && tm.TraceId.IsNullOrEmpty()) tm.TraceId = DefaultSpan.Current?.ToString();
+
         Init();
+    
         var rs = _queue.Add(@event);
 
         return Task.FromResult(1);
