@@ -6,7 +6,7 @@
     <Description>Redis扩展库，便于注入Redis，支持分布式缓存IDistributedCache和数据保护IDataProtection</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2026 湖北登灏科技有限公司</Copyright>
-    <VersionPrefix>4.17</VersionPrefix>
+    <VersionPrefix>4.18</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
     <FileVersion>$(Version)</FileVersion>
@@ -31,7 +31,7 @@
     <RepositoryUrl>https://github.com/PeiKeSmart/DH.NRedis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>新增数据保护IDataProtection</PackageReleaseNotes>
+    <PackageReleaseNotes>RedisStream队列增加信息展示，支持自动删除空闲消费组</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
