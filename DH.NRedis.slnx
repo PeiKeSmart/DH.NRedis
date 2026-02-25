@@ -2,6 +2,7 @@
   <Folder Name="/Samples/">
     <Project Path="Samples/Benchmark/Benchmark.csproj" />
     <Project Path="Samples/QueueDemo/QueueDemo.csproj" />
+    <Project Path="Samples/RedisSwitch/RedisSwitch.csproj" />
     <Project Path="Samples/WebDemo/WebDemo.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
