@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RedisSwitch.Models;
 using RedisSwitch.Services;
 
@@ -34,7 +34,7 @@ public class MessageController : ControllerBase
         {
             Id = Guid.NewGuid().ToString(),
             Content = request.Content,
-            CreatedTime = DateTime.Now,
+            CreatedTime = DateTime.UtcNow,
             Properties = request.Properties
         };
 
@@ -55,7 +55,7 @@ public class MessageController : ControllerBase
         return Ok(new
         {
             QueueLength = count,
-            Timestamp = DateTime.Now
+            Timestamp = DateTime.UtcNow
         });
     }
 }
