@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NewLife.Redis\NewLife.Redis.csproj" />
+    <ProjectReference Include="..\..\DH.NRedis\DH.NRedis.csproj" />
   </ItemGroup>
 
 </Project>
