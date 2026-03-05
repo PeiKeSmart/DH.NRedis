@@ -3,8 +3,8 @@
     <TargetFrameworks>net45;net461;netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>DH.NRedis</AssemblyName>
     <RootNamespace>NewLife.Caching</RootNamespace>
-    <AssemblyTitle>登灏Redis客户端组件</AssemblyTitle>
-    <Description>Redis基础操作、消息队列，经过日均100亿次调用量的项目验证。旧版NET45找2021年</Description>
+    <AssemblyTitle>登灏Redis客户端</AssemblyTitle>
+    <Description>性能Redis客户端，支持RESP2/RESP3协议，覆盖Redis 2.8～7.x全部数据结构与命令，内置消息队列（简单/可靠/延迟/Stream），支持集群/哨兵/云厂商适配，经日均80+亿次调用验证</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2026 湖北登灏科技有限公司</Copyright>
     <VersionPrefix>4.21</VersionPrefix>
