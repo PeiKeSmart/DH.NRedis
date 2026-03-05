@@ -13,7 +13,7 @@ using Xunit;
 namespace XUnitTest.Queues;
 
 //[Collection("Queue")]
-[TestCaseOrderer("DH.UnitTest.DefaultOrderer", "DH.UnitTest")]
+[TestCaseOrderer("NewLife.UnitTest.DefaultOrderer", "NewLife.UnitTest")]
 public class DelayQueueTests
 {
     private readonly FullRedis _redis;

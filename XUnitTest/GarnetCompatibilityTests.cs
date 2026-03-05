@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using NewLife.Caching;
 using NewLife.Caching.Queues;
