@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NewLife.Caching.Queues;
 using Xunit;
 
@@ -11,7 +11,6 @@ public class RedisQueueStatusTests
     {
         var status = new RedisQueueStatus();
 
-        Assert.Null(status.Key);
         Assert.Null(status.MachineName);
         Assert.Null(status.UserName);
         Assert.Equal(0, status.ProcessId);
