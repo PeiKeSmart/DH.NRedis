@@ -7,7 +7,7 @@
     <Description>数据处理、定时任务、MQ生产消费、系统监控等超长独立工作的后台任务</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2025 湖北登灏科技有限公司</Copyright>
-    <VersionPrefix>4.00</VersionPrefix>
+    <VersionPrefix>4.21</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
     <FileVersion>$(Version)</FileVersion>
