@@ -4,13 +4,13 @@ applyTo: "**/Net/**"
 
 # 网络编程指令
 
-适用于基于 `DH.NNet` 的网络服务器（`NetServer`）和客户端（`ISocketClient`）开发任务。
+适用于 PeiKeSmart / `DH.NCore` 网络模块中的网络服务器（`NetServer`）和客户端（`ISocketClient`）开发任务。当前源码网络 API 仍主要位于 `NewLife.Net.*` 命名空间。
 
 ---
 
 ## 1. 架构概览
 
-NewLife 网络框架分为两层：
+DH.NCore 当前网络能力沿用 `NewLife.Net` 体系，分为两层：
 
 | 层级 | 服务端 | 客户端 | 说明 |
 |------|--------|--------|------|
