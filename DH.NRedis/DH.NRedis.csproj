@@ -32,7 +32,7 @@
     <RepositoryUrl>https://github.com/PeiKeSmart/DH.NRedis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>支持RESP3协议并优化核心性能分配；增强Garnet兼容性识别与文档；新增RedisSwitch示例并重构基准测试与文档体系</PackageReleaseNotes>
+    <PackageReleaseNotes>修复RedisStream在XINFO返回ERR no such key时的错误处理；增强ConsumeAsync自动恢复能力，提升消费组健壮性</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
