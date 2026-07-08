@@ -7,7 +7,7 @@
     <Description>性能Redis客户端，支持RESP2/RESP3协议，覆盖Redis 2.8～7.x全部数据结构与命令，内置消息队列（简单/可靠/延迟/Stream），支持集群/哨兵/云厂商适配，经日均80+亿次调用验证</Description>
     <Company>湖北登灏科技有限公司</Company>
     <Copyright>©2020-2026 湖北登灏科技有限公司</Copyright>
-    <VersionPrefix>4.22</VersionPrefix>
+    <VersionPrefix>4.24</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
     <FileVersion>$(Version)</FileVersion>
@@ -32,7 +32,7 @@
     <RepositoryUrl>https://github.com/PeiKeSmart/DH.NRedis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>湖北登灏科技有限公司;DH组件;DH;$(AssemblyName)</PackageTags>
-    <PackageReleaseNotes>修复RedisStream在XINFO返回ERR no such key时的错误处理；增强ConsumeAsync自动恢复能力，提升消费组健壮性</PackageReleaseNotes>
+    <PackageReleaseNotes>6月例行维护发布，持续提供稳定的Redis客户端能力；无新增公共API，保持与6.5系列完全兼容；延续RedisStream异常恢复与消费组健壮性增强成果；改进EventBus事件总线接口</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DH.NCore" Version="4.22.2026.506-beta0855" />
+    <PackageReference Include="DH.NCore" Version="4.24.2026.707-beta1312" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
