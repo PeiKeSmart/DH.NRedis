@@ -484,7 +484,7 @@ public class Redis : Cache, IConfigMapping, ILogFeature
             Max = 100000,
             IdleTime = 30,
             AllIdleTime = 300,
-            Log = ClientLog,
+            //Log = ClientLog,
 
             Callback = onCreate,
         };
