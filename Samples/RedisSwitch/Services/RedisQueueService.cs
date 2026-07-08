@@ -1,4 +1,4 @@
-﻿using NewLife.Caching;
+using NewLife.Caching;
 using NewLife.Log;
 using RedisSwitch.Models;
 

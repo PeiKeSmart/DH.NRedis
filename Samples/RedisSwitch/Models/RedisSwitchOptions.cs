@@ -1,4 +1,4 @@
-﻿namespace RedisSwitch.Models;
+namespace RedisSwitch.Models;
 
 /// <summary>Redis交换机配置</summary>
 public class RedisSwitchOptions

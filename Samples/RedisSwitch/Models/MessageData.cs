@@ -1,4 +1,4 @@
-﻿namespace RedisSwitch.Models;
+namespace RedisSwitch.Models;
 
 /// <summary>消息数据</summary>
 public class MessageData

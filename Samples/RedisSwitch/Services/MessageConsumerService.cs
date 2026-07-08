@@ -1,4 +1,4 @@
-﻿using NewLife.Caching;
+using NewLife.Caching;
 using NewLife.Log;
 using RedisSwitch.Models;
 using System.Text;
@@ -121,7 +121,7 @@ public class MessageConsumerService : BackgroundService
                 else
                 {
                     attempt++;
-                    _logger.LogWarning("Failed to forward message {MessageId}, StatusCode: {StatusCode}, Attempt: {Attempt}/{MaxAttempts}",
+                    _logger.LogWarning("Failed to forward message {MessageId}, StatusCode: {StatusCode}, Attempt: {Attempt}/{MaxAttempts}", 
                         message.Id, response.StatusCode, attempt, maxAttempts);
                     if (attempt < maxAttempts)
                         await Task.Delay(1000 * attempt, cancellationToken);
@@ -130,7 +130,7 @@ public class MessageConsumerService : BackgroundService
             catch (Exception ex)
             {
                 attempt++;
-                _logger.LogError(ex, "Error forwarding message {MessageId}, Attempt: {Attempt}/{MaxAttempts}",
+                _logger.LogError(ex, "Error forwarding message {MessageId}, Attempt: {Attempt}/{MaxAttempts}", 
                     message.Id, attempt, maxAttempts);
                 if (attempt < maxAttempts)
                     await Task.Delay(1000 * attempt, cancellationToken);

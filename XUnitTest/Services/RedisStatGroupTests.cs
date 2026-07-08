@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NewLife.Caching;
 using NewLife.Caching.Services;
 using Xunit;

@@ -25,7 +25,7 @@ public class GeoTests
 #endif
     }
 
-    [Fact]
+    [RedisFact]
     public void Test()
     {
         var key = "geo";
@@ -64,7 +64,7 @@ public class GeoTests
         Assert.Equal(744, (Int32)Math.Round(gis[2].Latitude * 100));
     }
 
-    [Fact]
+    [RedisFact]
     public void GetDistance()
     {
         var key = "geo_distance";
@@ -83,7 +83,7 @@ public class GeoTests
         Assert.Equal(1066019.9908, d);
     }
 
-    [Fact]
+    [RedisFact]
     public void GetHash()
     {
         var key = "geo_hash";
@@ -104,7 +104,7 @@ public class GeoTests
         Assert.Equal("wtw3u88z910", hs[1]);
     }
 
-    [Fact]
+    [RedisFact]
     public void GetRadiusByXY()
     {
         var key = "geo_radius_xy";
@@ -145,7 +145,7 @@ public class GeoTests
         Assert.Equal(156.4278, gis[1].Distance);
     }
 
-    [Fact]
+    [RedisFact]
     public void GetRadiusByMember()
     {
         var key = "geo_radius_member";
@@ -184,6 +184,56 @@ public class GeoTests
 
         Assert.Equal(0, gis[0].Distance);
         Assert.Equal(157.1110, gis[1].Distance);
+    }
+
+    [RedisFact(DisplayName = "GEOSEARCH通用地理搜索测试")]
+    public void GeoSearchTest()
+    {
+        var key = "geo_search";
+
+        _redis.Remove(key);
+
+        var geo = new RedisGeo(_redis, key);
+
+        // 批量添加
+        var list = new List<GeoInfo>();
+        for (var i = 0; i < 10; i++)
+        {
+            list.Add(new GeoInfo { Name = "Test" + i, Longitude = i + 0.33, Latitude = i + 0.44 });
+        }
+        geo.Add(list.ToArray());
+
+        // 按成员搜索
+        var gis = geo.Search("Test3", null, null, 200000);
+        Assert.True(gis.Length >= 3);
+
+        // 按坐标搜索
+        gis = geo.Search(null, 3.31, 3.45, 200000, count: 2);
+        Assert.Equal(2, gis.Length);
+    }
+
+    [RedisFact(DisplayName = "GEOSEARCHSTORE搜索存储测试")]
+    public void GeoSearchStoreTest()
+    {
+        var key = "geo_search_store";
+        var dest = "geo_search_store_dest";
+
+        _redis.Remove(key);
+        _redis.Remove(dest);
+
+        var geo = new RedisGeo(_redis, key);
+
+        // 批量添加
+        var list = new List<GeoInfo>();
+        for (var i = 0; i < 10; i++)
+        {
+            list.Add(new GeoInfo { Name = "Test" + i, Longitude = i + 0.33, Latitude = i + 0.44 });
+        }
+        geo.Add(list.ToArray());
+
+        // 搜索并存储
+        var count = geo.SearchStore(dest, "Test3", null, null, 200000, count: 3);
+        Assert.Equal(3, count);
     }
 }
 

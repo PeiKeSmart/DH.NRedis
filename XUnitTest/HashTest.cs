@@ -28,7 +28,7 @@ public class HashTest
 #endif
     }
 
-    [Fact]
+    [RedisFact]
     public void HMSETTest()
     {
         var key = "hash_key";
@@ -51,7 +51,7 @@ public class HashTest
         Assert.True(hash.ContainsKey("aaa"));
     }
 
-    [Fact]
+    [RedisFact]
     public void Search()
     {
         var rkey = "hash_Search";
@@ -76,7 +76,7 @@ public class HashTest
         Assert.Equal("stone3", dic.Skip(2).First().Key);
     }
 
-    [Fact]
+    [RedisFact]
     public void QuoteTest()
     {
         var key = "hash_quote";
@@ -97,7 +97,7 @@ public class HashTest
         Assert.Equal(org5, hash["org5"]);
     }
 
-    [Fact]
+    [RedisFact]
     public void CheckHashTest()
     {
         var key = $"NewLife:eventinfo:adsfasdfasdfdsaf";
@@ -115,7 +115,7 @@ public class HashTest
         rh["0"] = new EventInfo { EventId = "1234", EventName = "Stone" };
     }
 
-    [Fact(DisplayName = "获取所有数据，丢失数据bug")]
+    [RedisFact(DisplayName = "获取所有数据，丢失数据bug")]
     public void ValuesHashTest()
     {
         //RedisHash、RedisList[Values、Values、GetAll、Search] redis 5.0 都有类似的情况
@@ -149,7 +149,7 @@ public class HashTest
         }
     }
 
-    [Fact]
+    [RedisFact]
     public void RemoveTest()
     {
         var key = $"NewLife:eventinfo:adsfasdfasdfdsaf";
@@ -170,6 +170,83 @@ public class HashTest
 
         rh.Remove("0");
         Assert.Equal(2, rh.Count);
+    }
+
+    [RedisFact(DisplayName = "HRANDFIELD随机字段测试")]
+    public void HRandFieldTest()
+    {
+        var key = "hash_randfield";
+
+        _redis.Remove(key);
+
+        var hash = _redis.GetDictionary<String>(key) as RedisHash<String, String>;
+        Assert.NotNull(hash);
+
+        hash.HMSet(new Dictionary<String, String>
+        {
+            ["a"] = "1",
+            ["b"] = "2",
+            ["c"] = "3"
+        });
+
+        var fields = hash.HRandField(2);
+        Assert.NotNull(fields);
+        Assert.Equal(2, fields.Length);
+    }
+
+    [RedisFact(DisplayName = "HGETDEL获取并删除字段测试")]
+    public void HGetDelTest()
+    {
+        var key = "hash_getdel";
+
+        _redis.Remove(key);
+
+        var hash = _redis.GetDictionary<String>(key) as RedisHash<String, String>;
+        Assert.NotNull(hash);
+
+        hash.HMSet(new Dictionary<String, String>
+        {
+            ["field1"] = "value1",
+            ["field2"] = "value2"
+        });
+
+        try
+        {
+            var val = hash.HGetDel("field1");
+            Assert.Equal("value1", val);
+            Assert.False(hash.ContainsKey("field1"));
+            Assert.True(hash.ContainsKey("field2"));
+        }
+        catch (RedisException ex) when (ex.Message.Contains("unknown command"))
+        {
+            XTrace.WriteLine("Redis不支持HGETDEL命令（需Redis 6.2+），跳过测试");
+        }
+    }
+
+    [RedisFact(DisplayName = "HGETEX获取并设置过期测试")]
+    public void HGetExTest()
+    {
+        var key = "hash_getex";
+
+        _redis.Remove(key);
+
+        var hash = _redis.GetDictionary<String>(key) as RedisHash<String, String>;
+        Assert.NotNull(hash);
+
+        hash.HMSet(new Dictionary<String, String>
+        {
+            ["field1"] = "value1"
+        });
+
+        try
+        {
+            var val = hash.HGetEx("field1", 60);
+            Assert.Equal("value1", val);
+        }
+        catch (RedisException ex) when (ex.Message.Contains("unknown command"))
+        {
+            XTrace.WriteLine("Redis不支持HGETEX命令（需Redis 6.2+），跳过测试");
+        }
     }
 
     class EventInfo
