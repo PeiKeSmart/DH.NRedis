@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "接续自检（打开项目自动运行）",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools/continuity/install-global-instruction.ps1"
+      ],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "close": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
