@@ -1,16 +1,15 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-  一键安装「用户级接续指令」到本机 VS Code —— 本机所有项目自动获得接续协议与用户偏好。
+  一键安装「用户级接续指令（按技术栈拆分版）」到本机 VS Code。
 .DESCRIPTION
-  把 templates\用户级指令.instructions.md 安装/更新到 %APPDATA%\Code\User\prompts\（VS Code
-  用户级指令目录）。幂等三态：缺失→安装、过旧→更新、一致→不动。
-  供“打开项目自检”任务（.vscode/tasks.json）与 AI 接续自检共用；含版本守卫（旧仓库不会覆盖新副本）。
-  若已启用 Settings Sync 且勾选 "Prompts and Instructions"，该文件会自动漫游到其他电脑。
+  把 templates\ 下的 5 个拆分指令逐个安装/更新到 %APPDATA%\Code\User\prompts\：
+    跨项目接续协议 / Rust项目规范 / 服务端与数据规范 / 前端规范 / Zig项目规范
+  幂等：缺失→安装、过旧→更新、一致→不动、比本机旧→跳过（版本守卫）。
+  不再安装旧版 用户级指令.instructions.md（它只作索引/兼容存根）。
+  供“打开项目自检”任务（.vscode/tasks.json）与 AI 接续自检共用。
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools/continuity/install-global-instruction.ps1
-.EXAMPLE
-  powershell -ExecutionPolicy Bypass -File tools/continuity/install-global-instruction.ps1 -Insiders
 #>
 param(
     [switch]$Insiders
@@ -27,11 +26,11 @@ if (-not $env:APPDATA) {
 }
 
 $targetDir = Join-Path $env:APPDATA "$channel\User\prompts"
-$source = Join-Path $PSScriptRoot 'templates\用户级指令.instructions.md'
+$srcDir = Join-Path $PSScriptRoot 'templates'
+$names = @('跨项目接续协议', 'Rust项目规范', '服务端与数据规范', '前端规范', 'Zig项目规范')
 
-if (-not (Test-Path $source)) {
-    Write-Host "未找到模板文件：$source"
-    Write-Host '请在已装备的仓库内运行本脚本（tools/continuity/templates/ 应含该模板）。'
+if (-not (Test-Path $srcDir)) {
+    Write-Host "未找到模板目录：$srcDir"
     exit 2
 }
 
@@ -40,18 +39,14 @@ if (-not (Test-Path $targetDir)) {
     Write-Host "已创建目录：$targetDir"
 }
 
-$dest = Join-Path $targetDir '跨项目接续协议.instructions.md'
-
 function Get-FileVersion([string]$path) {
-    if (-not (Test-Path $path)) { return '' }
-    $text = [IO.File]::ReadAllText($path)
-    $m = [regex]::Match($text, '版本：([0-9]+(?:\.[0-9]+)*)')
-    if ($m.Success) { return $m.Groups[1].Value }
-    return ''
+    $text = [IO.File]::ReadAllText($path, [Text.Encoding]::UTF8)
+    $ms = [regex]::Matches($text, '版本：([0-9]+(?:\.[0-9]+)*)')
+    if ($ms.Count -eq 0) { return '' }
+    return $ms[$ms.Count - 1].Groups[1].Value
 }
 
 function Test-VersionNewer([string]$a, [string]$b) {
-    # $a 比 $b 新则返回 $true（分段数值比较）
     $pa = @(); if ($a) { $pa = $a.Split('.') | ForEach-Object { [int]$_ } }
     $pb = @(); if ($b) { $pb = $b.Split('.') | ForEach-Object { [int]$_ } }
     $n = [Math]::Max($pa.Count, $pb.Count)
@@ -65,29 +60,45 @@ function Test-VersionNewer([string]$a, [string]$b) {
     return $false
 }
 
-$srcVer = Get-FileVersion $source
-$srcHash = (Get-FileHash -Path $source -Algorithm SHA256).Hash
+$installed = 0
+$skipped = 0
+$missing = 0
 
-if (-not (Test-Path $dest)) {
-    Copy-Item -Path $source -Destination $dest -Force
-    Write-Host "INSTALLED：已安装用户级指令 -> $dest（版本 $srcVer）"
-    exit 0
+foreach ($n in $names) {
+    $src = Join-Path $srcDir "$n.instructions.md"
+    if (-not (Test-Path $src)) {
+        Write-Host "MISSING：模板缺失 $src"
+        $missing++
+        continue
+    }
+
+    $dst = Join-Path $targetDir "$n.instructions.md"
+    $srcHash = (Get-FileHash -Path $src -Algorithm SHA256).Hash
+    $srcVer = Get-FileVersion $src
+
+    if (Test-Path $dst) {
+        $dstHash = (Get-FileHash -Path $dst -Algorithm SHA256).Hash
+        if ($srcHash -eq $dstHash) {
+            $skipped++
+            continue
+        }
+        $dstVer = Get-FileVersion $dst
+        if ($dstVer -and $srcVer -and -not (Test-VersionNewer $srcVer $dstVer)) {
+            Write-Host "SKIP：$n 本机版本较新（$dstVer >= $srcVer），保留本机副本"
+            $skipped++
+            continue
+        }
+    }
+
+    Copy-Item -Path $src -Destination $dst -Force
+    Write-Host "INSTALLED：$n -> $dst（版本 $srcVer）"
+    $installed++
 }
 
-$dstHash = (Get-FileHash -Path $dest -Algorithm SHA256).Hash
-if ($srcHash -eq $dstHash) {
-    Write-Host "OK：已是最新（版本 $srcVer），无需操作"
-    exit 0
+if ($missing -gt 0) {
+    Write-Host "ERROR：有 $missing 个模板缺失，安装未完成" -ForegroundColor Red
+    exit 2
 }
 
-$dstVer = Get-FileVersion $dest
-try { $srcNewer = Test-VersionNewer $srcVer $dstVer } catch { $srcNewer = $true }
-if (-not $srcNewer -and $srcVer -and $dstVer -and $srcVer -ne $dstVer) {
-    Write-Host "SKIP：本仓库模板版本较旧（$srcVer < $dstVer），已保留本机较新副本；建议 git pull 更新本项目"
-    exit 0
-}
-
-$oldText = if ($dstVer) { $dstVer } else { '无版本' }
-Copy-Item -Path $source -Destination $dest -Force
-Write-Host "UPDATED：已更新用户级指令 -> $dest（$oldText -> $srcVer）"
-Write-Host '说明：本机所有项目在“新开的会话”中自动生效；漫游到其他电脑见 README“两条路”。'
+Write-Host "OK：拆分版用户级指令已就绪（安装 $installed，已一致/跳过 $skipped）"
+exit 0
