@@ -1,4 +1,4 @@
----
+﻿---
 name: Rust项目规范
 description: "Use when: 改 Rust 代码/Cargo/构建与发布脚本、排查编译慢、拉新源码依赖、判断可复用实现时。"
 applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
@@ -106,4 +106,14 @@ applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
 - 拉新纪律：先查工作区状态（有本地改动先说明/stash）；只做快进（--ff-only）；GitHub 直连受限时按既有约定用 IP 直连（http.curloptResolve）；拉新得到的提交号写入当轮收尾台账。
 - **边界**：拉新是「读」，**不等于可以写** —— 要改别的仓库时**另问**；各自项目各自仓库处理。
 
-<!-- 版本：2026.11.12.4（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
+## MVC 目录与控制器（C# 对齐 · 全项目通用）
+
+- **一个控制器一个 `.rs` 文件**：`XxxController.rs` + 类型 `XxxController`；禁止把多个控制器塞进同一文件，也禁止叫 `xxx.rs` 这种看不出是控制器的名字。
+- 目录：
+  - 区域（后台）控制器 → `Areas/{Area}/Controllers/XxxController.rs`，视图 → `Areas/{Area}/Views/{Controller}/{Action}.cshtml`；
+  - 根级（前台/非区域）控制器 → `Controllers/XxxController.rs`，视图 → `Views/{Controller}/{Action}.cshtml`。
+- Rust 模块名必须是 snake_case：用 `#[path = "XxxController.rs"] pub mod xxx_controller;` 保住 C# 文件名，
+  目录里放 `mod.rs` 统一 `pub use`；`main.rs` 挂载区域模块时路径相对 `src/`，要写 `#[path = "../Areas/{Area}/Controllers/mod.rs"]`。
+- 新建控制器时先按上面位置落文件再写路由，**不要**先塞进已有文件再拆。
+
+<!-- 版本：2026.11.20.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
