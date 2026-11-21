@@ -21,6 +21,9 @@ applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
   只作用于 MSVC host，`cargo zigbuild` 交叉编译不受影响（已回归验证 exit 0）。
 - **每个 Rust 项目必须自带 `[profile.fast]`**：`inherits = "release"` + `lto = false` + `codegen-units = 16` + `incremental = true`。
   缺了它 `cargo build --profile fast` 直接 `exit 101`（PekSendToMo 踩过）。实测改一个文件：**fast ≈4s / 配 rust-lld 后增量仅 1.3~1.75s vs fat LTO ≈3m10s**；`--release`（fat LTO）只给发版，不要为了“快”而长期用 dev 跑压测。
+  **★ 上面这组数字只适用于「小项目 / 已拆 crate」**：单 crate 大项目（如 HLZX.EIP，20 万行、`members = ["."]`）
+  改一行 `--profile fast` 实测 **2m24s** —— 因为 **rustc 的增量单位是 crate**，改任意 `.rs` 都要重做整个 crate 的
+  codegen + 链接。先确认自己是哪种，再决定跑哪个档；拿不准就先用 `cargo build`（dev）跑测试。
 - **先分清「下载慢」还是「编译慢」**：`cargo build -v` 看是 `Downloading` 还是 `Compiling`；只有 `Compiling` 占大头才去调 profile / 换链接器 / 换编译目标，否则白忙。
 - **保存即检查 / 自动重启**：Rust 项目装 `cargo-watch`，用 `cargo watch -x check`（或 `-x run`）代替手动重复构建。
 - **前端改动不重编后端**：Vue/Vite 项目开发期用 `vite dev`（热更新 + /api 代理）；构建产物目录（如 `wwwroot`）是独立资源、刷新页面即生效；只有后端源码变化才需要 cargo。
@@ -116,4 +119,4 @@ applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
   目录里放 `mod.rs` 统一 `pub use`；`main.rs` 挂载区域模块时路径相对 `src/`，要写 `#[path = "../Areas/{Area}/Controllers/mod.rs"]`。
 - 新建控制器时先按上面位置落文件再写路由，**不要**先塞进已有文件再拆。
 
-<!-- 版本：2026.11.20.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
+<!-- 版本：2026.11.21.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
