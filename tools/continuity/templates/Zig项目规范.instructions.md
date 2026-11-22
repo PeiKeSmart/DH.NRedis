@@ -1,4 +1,4 @@
-﻿---
+---
 name: Zig项目规范
 description: "Use when: 改 Zig 代码/构建、设计并发模型、做串口或硬件调测时。"
 applyTo: "**/*.zig,**/build.zig,**/build.zig.zon"
@@ -26,4 +26,4 @@ applyTo: "**/*.zig,**/build.zig,**/build.zig.zon"
 - **开不了口按顺序排查**：`serial_list_ports` 看枚举 → 是否被其它进程占用（`zzcom.log` / `zzcom-mcp.log` 里有具体错误与错误码）→ 再怀疑线序/供电/波特率。
 - **报告结论要带实测数据**：实际发送的字节（hex）、收到的原始字节、超时值；不要只写「通信正常」这类无证据结论。
 
-<!-- 版本：2026.11.21.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
+<!-- 版本：2026.11.22.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->

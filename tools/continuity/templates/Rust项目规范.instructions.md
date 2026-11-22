@@ -1,4 +1,4 @@
-﻿---
+---
 name: Rust项目规范
 description: "Use when: 改 Rust 代码/Cargo/构建与发布脚本、排查编译慢、拉新源码依赖、判断可复用实现时。"
 applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
@@ -119,4 +119,4 @@ applyTo: "**/*.rs,**/Cargo.toml,**/*.ps1,**/*.sh,**/Dockerfile"
   目录里放 `mod.rs` 统一 `pub use`；`main.rs` 挂载区域模块时路径相对 `src/`，要写 `#[path = "../Areas/{Area}/Controllers/mod.rs"]`。
 - 新建控制器时先按上面位置落文件再写路由，**不要**先塞进已有文件再拆。
 
-<!-- 版本：2026.11.21.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
+<!-- 版本：2026.11.22.1（content 变更请递增；本文件按 applyTo 按需加载，勿把细则塞回 "**" 版） -->
